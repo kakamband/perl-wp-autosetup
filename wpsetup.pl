@@ -11,6 +11,11 @@
 #   - download and installtion of wordpress with WP CLI
 #   - setup the usual suspected wp-users
 #   - install the commonly used wp-plugins
+#   
+#   DONE
+#   x create package to read and assigns .env file and it's variables
+#   x test connection to api with read login data from .env file
+#   
 ##############################################################################
 
 use strict;
@@ -20,34 +25,25 @@ use Data::Dumper qw(Dumper);
 use HTTP::CookieJar::LWP ();
 use LWP::UserAgent ();
 use HTTP::Request ();
-
 $\ = "\n";
+# Include local folder as lib
+use lib "./";
+# Load first own created Package: a .env FileReader
+use Dotenv;
 
-##############################################################################
-# Open and read the .env file and associcate
-# the enviromental variables with scalars
-# - should be a package in the end
-##############################################################################
-
-my $filename = "./.env";
-
-open(FH, '<', $filename) or die $!;
-print("File $filename opened successfully!\n");
-
-while(<FH>) {
-	print $_;
-}
-
-close(FH);
+# Create object with filename of .env file
+my $dotenv = Dotenv->new(".env");
+# opens the file, reads the content and assigns the variables to hash
+my %envvars = $dotenv->open();
 
 # Login credentials
-my $host = $ENV{'HOST'}; 
-my $realm = $ENV{'REALM'};
-my $uname = $ENV{'USERNAME'};
-my $pass = $ENV{'PASSSWORD'};
+my $host = $envvars{HOST}; 
+my $realm = $envvars{REALM};
+my $uname = $envvars{USERNAME};
+my $pass = $envvars{PASSWORD};
 
 # API-URL 
-my $url = $ENV{'API_URL'};
+my $url = $envvars{API_URL};
 
 ##############################################################################
 ##############################################################################
